@@ -4,6 +4,11 @@ pipeline{
     environment {
         NEW_VERSION = "1.3.0"
     }
+    parameters {
+    //   string(name: 'VERSION', defaultValue: ' ', description: '')
+      choice(name: 'VERSION', choices['1.1.0', '1.3.0', '1.2.1'], description: '')
+      booleanParam(name: 'executeTests', defaultValue: true, description: '')
+    }
     stages{
         
         stage("build"){
@@ -14,6 +19,11 @@ pipeline{
         }
 
         stage("test"){
+            when {
+                expression {
+                    params.executeTests
+                }
+            }
             steps{
                 echo "testing the application..."
             }
@@ -22,11 +32,7 @@ pipeline{
         stage("deploy"){
             steps{
                 echo "deploying the application..."
-                withCredentials([
-                    usernamePassword(credentials: 'git-creds', usernameVariable: USER, passwordVariable: PWD)
-                ]) {
-                    sh "Some script ${USER} ${PWD}"
-                }
+                echo "deploying version ${params.VERSION}"
             }
         }
     }
