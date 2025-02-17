@@ -6,6 +6,10 @@ pipeline{
     tools {
         maven "maven-3.9.9"
     }
+    //  /opt/java/openjdk/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    environment {
+        PATH: "/user/bin:$PATH"
+    }
     stages{
         stage("build jar"){
             steps{
