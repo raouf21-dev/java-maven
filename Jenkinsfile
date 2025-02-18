@@ -1,5 +1,12 @@
 #!/user/bin/env groovy
-@Library('jenkins-sharded-library')
+// @Library('jenkins-sharded-library')
+
+library identifier: "jenkins-sharded-library@main", retriever: modernSCM(
+    [$class: 'GitSCMSource',
+     remote: 'https://github.com/raouf21-dev/java-maven.git',
+     credentialsId: 'git-creds'
+    ]
+)
 
 def gv
 
