@@ -1,3 +1,6 @@
+#!/user/bin/env groovy
+@Library(jenkins-library-library) _
+
 def gv
 
 pipeline{
@@ -13,27 +16,17 @@ pipeline{
                 echo "Executing pipeline for branch $BRANCH_NAME"
             }
         }
-        stage("build"){
-            when {
-                expression {
-                    BRANCH_NAME == "main"
-                }
-            }
+        stage("build jar"){
             steps{
                 script{
-                    echo "Building the application..."
+                    buildJar()
                 }
             }
         }
-        stage("deploy"){
-            when {
-                    expression {
-                        BRANCH_NAME == "main"
-                    }
-                }
+        stage("build image"){
             steps{
                 script{
-                    echo "Deploying the application..."
+                    buildImage()
                 }
             }
         }
