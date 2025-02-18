@@ -7,25 +7,35 @@ pipeline{
         maven "maven-3.9.9"
     }
     stages{
-        stage("build jar"){
+        stage("test"){
+            steps {
+                echo "testing the application..."
+                echo "Executing pipeline for branch $BRANCH_NAME"
+            }
+        }
+        stage("build"){
+            when {
+                expression {
+                    BRANCH_NAME == "main"
+                }
+            }
             steps{
-                script {
-                    echo "building the application..."
-                    sh "mvn package "
+                script{
+                    echo "Building the application..."
                 }
             }
         }
-        stage("build image"){
-            steps{
-                script {
-                    echo "building the docker image..."
-                    withCredentials([usernamePassword(credentialId: "docker-hub-creds", passwordVariable: "PASS", usernameVariable: "USER")]){
-                        sh "docker build -t santana20095/demo-app:jma-2.0 ."
-                        sh "echo $PASS | docker login -u $USER --password-stdin"
-                        sh "docker push santana20095/demo-app:jma-2.0"
+        stage("deploy"){
+            when {
+                    expression {
+                        BRANCH_NAME == "main"
                     }
                 }
+            steps{
+                script{
+                    echo "Deploying the application..."
+                }
             }
         }
-}
+    }
 }
