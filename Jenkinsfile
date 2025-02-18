@@ -7,34 +7,35 @@ pipeline{
         maven "maven-3.9.9"
     }
     stages{
-        stage("init"){
+        stage("test"){
             steps {
-                script {
-                    gv = load "script.groovy"
-                }
+                echo "testing the application..."
+                echo "Executing pipeline for branch $BRANCH_NAME"
             }
         }
-        stage("build jar"){
+        stage("build"){
+            when {
+                expression {
+                    BRANCH_NAME == "main"
+                }
+            }
             steps{
-                script {
-                    gv.buildJar()   
+                script{
+                    echo "Building the application..."
                 }
             }
         }
-
-        stage("build image"){
+        stage("deploy"){
+            when {
+                    expression {
+                        BRANCH_NAME == "main"
+                    }
+                }
             steps{
-                script {
-                    gv.buildImage()
+                script{
+                    echo "Deploying the application..."
                 }
             }
         }
-        stage('deploy image'){
-            steps{
-                script {
-                    gv.deployJar()
-                }
-            }
-        }
-}
+    }
 }
