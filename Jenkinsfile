@@ -1,5 +1,5 @@
 #!/user/bin/env groovy
-@Library(jenkins-sharded-library)
+@Library('jenkins-sharded-library')
 
 def gv
 
