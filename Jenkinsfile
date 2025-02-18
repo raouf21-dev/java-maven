@@ -3,7 +3,7 @@
 
 library identifier: 'jenkins-sharded-library@main', retriever: modernSCM(
     [$class: 'GitSCMSource',
-     remote: 'https://github.com/raouf21-dev/java-maven.git',
+     remote: 'https://github.com/raouf21-dev/jenkins-shared-library.git',
      credentialsId: 'git-creds'])
 
 def gv
