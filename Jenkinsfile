@@ -1,12 +1,10 @@
-#!/user/bin/env groovy
+#!/usr/bin/env groovy
 // @Library('jenkins-sharded-library')
 
-library identifier: "jenkins-sharded-library@main", retriever: modernSCM(
+library identifier: 'jenkins-sharded-library@main', retriever: modernSCM(
     [$class: 'GitSCMSource',
      remote: 'https://github.com/raouf21-dev/java-maven.git',
-     credentialsId: 'git-creds'
-    ]
-)
+     credentialsId: 'git-creds'])
 
 def gv
 
@@ -33,9 +31,9 @@ pipeline{
         stage("build & push image"){
             steps{
                 script{
-                    buildImage("santana20095/demo-app:jma-3.0")
+                    buildImage("santana20095/demo-app:jma-3.1")
                     dockerLogin()
-                    dockerPush "santana20095/demo-app:jma-3.0"
+                    dockerPush "santana20095/demo-app:jma-3.1"
                 }
             }
         }
