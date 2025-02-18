@@ -23,10 +23,12 @@ pipeline{
                 }
             }
         }
-        stage("build image"){
+        stage("build & push image"){
             steps{
                 script{
-                    buildImage("santana20095/demo-app:jma-2.2")
+                    buildImage("santana20095/demo-app:jma-3.0")
+                    dockerLogin()
+                    dockerPush "santana20095/demo-app:jma-3.0"
                 }
             }
         }
