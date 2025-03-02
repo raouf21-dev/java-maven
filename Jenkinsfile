@@ -7,7 +7,7 @@ pipeline{
         maven "maven-3.9.9"
     }
     environment{
-        BRANCH_NAME= sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+        BRANCH_NAME= sh(script: "echo ${env.GIT_BRANCH} | sed 's|origin/||'", returnStdout: true).trim()
     }
     stages{
         stage("test"){
