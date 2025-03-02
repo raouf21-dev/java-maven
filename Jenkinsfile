@@ -6,6 +6,9 @@ pipeline{
     tools {
         maven "maven-3.9.9"
     }
+    environment{
+        BRANCH_NAME= sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+    }
     stages{
         stage("test"){
             steps {
