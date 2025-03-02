@@ -7,6 +7,7 @@ pipeline{
         maven "maven-3.9.9"
     }
     environment{
+        WEBHOOK_TEST = "test"
         BRANCH_NAME= sh(script: "echo ${env.GIT_BRANCH} | sed 's|origin/||'", returnStdout: true).trim()
     }
     stages{
