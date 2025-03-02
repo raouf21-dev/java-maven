@@ -14,11 +14,16 @@ pipeline{
     tools {
         maven "maven-3.9.9"
     }
+    environment{
+        WEBHOOK_TEST = "Testing web-hook."
+        BRANCH_NAME= sh(script: "echo ${env.GIT_BRANCH} | sed 's|origin/||'", returnStdout: true).trim()
+    }
     stages{
         stage("test"){
             steps {
                 echo "testing the application..."
                 echo "Executing pipeline for branch $BRANCH_NAME"
+                echo "$WEBHOOK_TEST"
             }
         }
         stage("build jar"){
