@@ -6,11 +6,15 @@ pipeline{
     tools {
         maven "maven-3.9.9"
     }
+    environment {
+        MULTIBRNACH_WEBHOOK = "Testing MULTIBRNACH_WEBHOOK"
+    } 
     stages{
         stage("test"){
             steps {
                 echo "testing the application..."
-                echo "Executing pipeline for branch $BRANCH_NAME"
+                // echo "Executing pipeline for branch $BRANCH_NAME"
+                echo "$MULTIBRNACH_WEBHOOK"
             }
         }
         stage("build"){
