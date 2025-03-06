@@ -1,39 +1,52 @@
 def gv
-
-pipeline{
-    
+pipeline {
     agent any
-    tools {
-        maven "maven-3.9.9"
+    environment {
+        NEW_VERSION = "1.3.0"
     }
-    stages{
-        stage("test"){
+    stages {
+        stage("Increment Version") {
             steps {
-                echo "testing the application..."
-                echo "Executing pipeline for branch $BRANCH_NAME"
-            }
-        }
-        stage("build"){
-            when {
-                expression {
-                    BRANCH_NAME == "main"
+                script {
+                    echo "Incrementing app version..."
+                    sh '''
+                    mvn build-helper:parse-version versions:set \
+                    -DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion} \
+                    versions:commit
+                    '''
+                    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+                    def version = matcher[0][1]
+                    env.IMAGE_NAME = "${version}-${BUILD_NUMBER}"
                 }
             }
-            steps{
-                script{
+        }
+        
+        stage("Build App") {
+            steps {
+                script {
                     echo "Building the application..."
+                    sh "mvn clean package"
                 }
             }
         }
-        stage("deploy"){
-            when {
-                    expression {
-                        BRANCH_NAME == "main"
+    
+        stage("Build Image") {
+            steps {
+                script {
+                    echo "Building the Docker image..."
+                    withCredentials([usernamePassword(credentialsId: "server-credentials", usernameVariable: 'USER', passwordVariable: 'PWD')]) {
+                        sh "docker build -t santana20095/demo-app:${IMAGE_NAME} ."
+                        sh 'echo $PWD | docker login -u $USER --password-stdin'
+                        sh "docker push santana20095/demo-app:${IMAGE_NAME}"
                     }
                 }
-            steps{
-                script{
-                    echo "Deploying the application..."
+            }
+        }
+        
+        stage("Deploy") {
+            steps {
+                script {
+                    echo "Deploying Docker image..."
                 }
             }
         }
