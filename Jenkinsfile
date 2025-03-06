@@ -30,14 +30,13 @@ pipeline{
         stage("build image"){
             steps{
                 echo "building the docker image"
-                withCredentials([
-                    usernamePassword(credentials: "server-credentials", usernameVariable: USER, passwordVariable: PWD)
+                withCredentials([usernamePassword(credentials: "server-credentials", usernameVariable: USER, passwordVariable: PWD)])
                     sh "docker build -t santana20095/demo-app:${IMAGE_NAME} ."
                     sh 'echo $PASS | docker login -u $USER --password-stdin'
                     sh "docker push santana20095/demo-app:${IMAGE_NAME}"
-                ]) {
+                 
                     sh "Some script ${USER} ${PWD}"
-                }
+                
             }
         }
         stage("deploy") {
