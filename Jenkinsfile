@@ -1,49 +1,51 @@
-def gv
-
-pipeline{
-    
+pipeline {
     agent any
     environment {
         NEW_VERSION = "1.3.0"
     }
-    stages{
-
-        stage("increment version"){
-            script{
-                echo "incrementing app version..."
-                sh 'mvn build-hepler:parse-version versions:set \
-                -DnewVersion=\\\${parsedVersion.majorVersions}.\\\${parsedVersion.minorVersions}.\\\${parsed.version.nextIncrementalVersions} \
-                 versions:commit'
-                def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
-                def version = matcher[0][1]
-                env.IMAGE_NAME = "$version-$BUILD_NUMBER"
+    stages {
+        stage("Increment Version") {
+            steps {
+                script {
+                    echo "Incrementing app version..."
+                    sh '''
+                    mvn build-helper:parse-version versions:set \
+                    -DnewVersion=${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.nextIncrementalVersion} \
+                    versions:commit
+                    '''
+                    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+                    def version = matcher[0][1]
+                    env.IMAGE_NAME = "${version}-${BUILD_NUMBER}"
+                }
             }
         }
         
-        stage("build App"){
-            steps{
+        stage("Build App") {
+            steps {
                 script {
-                    echo "building the application..."
-                    echo "mvn clean package"
+                    echo "Building the application..."
+                    sh "mvn clean package"
                 }
             }
         }
     
-        stage("build image"){
-            steps{
+        stage("Build Image") {
+            steps {
                 script {
-                    echo "building the docker image"
-                    withCredentials([usernamePassword(credentials: "server-credentials", usernameVariable: USER, passwordVariable: PWD)])
+                    echo "Building the Docker image..."
+                    withCredentials([usernamePassword(credentialsId: "server-credentials", usernameVariable: 'USER', passwordVariable: 'PWD')]) {
                         sh "docker build -t santana20095/demo-app:${IMAGE_NAME} ."
-                        sh 'echo $PASS | docker login -u $USER --password-stdin'
-                        sh "docker push santana20095/demo-app:${IMAGE_NAME}"                
+                        sh 'echo $PWD | docker login -u $USER --password-stdin'
+                        sh "docker push santana20095/demo-app:${IMAGE_NAME}"
+                    }
                 }
             }
         }
-        stage("deploy") {
-            steps{
+        
+        stage("Deploy") {
+            steps {
                 script {
-                    echo "deploying docker image"
+                    echo "Deploying Docker image..."
                 }
             }
         }
