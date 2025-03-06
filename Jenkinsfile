@@ -22,18 +22,22 @@ pipeline{
         
         stage("build App"){
             steps{
-                echo "building the application..."
-                echo "mvn clean package"
+                script {
+                    echo "building the application..."
+                    echo "mvn clean package"
+                }
             }
         }
     
         stage("build image"){
             steps{
-                echo "building the docker image"
-                withCredentials([usernamePassword(credentials: "server-credentials", usernameVariable: USER, passwordVariable: PWD)])
-                    sh "docker build -t santana20095/demo-app:${IMAGE_NAME} ."
-                    sh 'echo $PASS | docker login -u $USER --password-stdin'
-                    sh "docker push santana20095/demo-app:${IMAGE_NAME}"                
+                script {
+                    echo "building the docker image"
+                    withCredentials([usernamePassword(credentials: "server-credentials", usernameVariable: USER, passwordVariable: PWD)])
+                        sh "docker build -t santana20095/demo-app:${IMAGE_NAME} ."
+                        sh 'echo $PASS | docker login -u $USER --password-stdin'
+                        sh "docker push santana20095/demo-app:${IMAGE_NAME}"                
+                }
             }
         }
         stage("deploy") {
