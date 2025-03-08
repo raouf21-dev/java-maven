@@ -7,7 +7,7 @@ pipeline{
         maven "maven-3.9.9"
     }
     environment {
-        MULTIBRNACH_WEBHOOK = "Testing MULTIBRNACH_WEBHOOK"
+        MULTIBRNACH_WEBHOOK = "Testing MULTIBRNACH_WEBHOOK..."
     } 
     stages{
         stage("test"){
