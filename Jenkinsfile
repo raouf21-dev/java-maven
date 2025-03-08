@@ -4,8 +4,16 @@ pipeline {
     agent any
     environment {
         NEW_VERSION = "1.3.0"
+        TEST_VAR = "test var"
     }
     stages {
+        stage("test"){
+            steps{
+                script{
+                    echo "$TEST_VAR"
+                }
+            }
+        }
         stage("Increment Version") {
             steps {
                 script {
