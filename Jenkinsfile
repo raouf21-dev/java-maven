@@ -3,7 +3,7 @@ def gv
 pipeline {
     agent any
     tools {
-        maven "Maven"
+        maven = "Maven"
     }
     environment {
         NEW_VERSION = "1.3.0"
