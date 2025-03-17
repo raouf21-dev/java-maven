@@ -35,7 +35,7 @@ pipeline {
         stage("Build App") {
             steps {
                 script {
-                    echo "Building the application.."
+                    echo "Building the application..."
                     sh "mvn clean package"
                 }
             }
